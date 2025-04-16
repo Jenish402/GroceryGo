@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export const AppContext = createContext();
 
@@ -54,7 +54,7 @@ const fetchUser = async ()=>{
     // Fetch All Products
     const fetchProducts = async ()=>{
         try {
-            const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/product/list`)
+            const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/product/list`)
             if(data.success){
                 setProducts(data.products)
             }else{
