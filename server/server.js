@@ -24,7 +24,26 @@ await connectDB();
 await connectCloudinary();
 
 // Allow multiple origins
-const allowedOrigins = ['http://localhost:5173', 'https://grocery-go-rho.vercel.app/'];
+const cors = require('cors');
+
+const whitelist = [
+  'http://localhost:5173',
+  'https://grocery-go-rho.vercel.app/'
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || whitelist.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+};
+
+app.use(cors(corsOptions));
+
+// const allowedOrigins = ['http://localhost:5173', 'https://grocery-go-rho.vercel.app/'];
 app.post('/api/webhook', express.raw({ type: 'application/json' }), stripeWebhooks);
 
 
@@ -32,13 +51,7 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), stripeWebhoo
 app.use("/public", express.static(path.join(__dirname, "public"))); // ✅ This works now
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: allowedOrigins, credentials: true }));
-
-// app.use(cors({
-//   origin: ['http://localhost:5173', 'https://grocery-go-rho.vercel.app/'],
-//   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-//   credentials: true
-// }));
+// app.use(cors({ origin: allowedOrigins, credentials: true }));
 
 app.get('/', (req, res) => res.send("API is Working"));
 
