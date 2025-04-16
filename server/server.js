@@ -40,17 +40,15 @@ const corsOptions = {
   }
 };
 
-app.use(cors(corsOptions));
 
-// const allowedOrigins = ['http://localhost:5173', 'https://grocery-go-rho.vercel.app/'];
 app.post('/api/webhook', express.raw({ type: 'application/json' }), stripeWebhooks);
 
 
 // Middleware
 app.use("/public", express.static(path.join(__dirname, "public"))); // ✅ This works now
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
-// app.use(cors({ origin: allowedOrigins, credentials: true }));
 
 app.get('/', (req, res) => res.send("API is Working"));
 
