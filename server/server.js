@@ -35,8 +35,8 @@ app.use(cookieParser());
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 
 app.use(cors({
-  origin: 'http://localhost:5173', 'https://grocery-go-rho.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'UPDATE', 'DELETE'],
+  origin: ['http://localhost:5173', 'https://grocery-go-rho.vercel.app'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true
 }));
 
