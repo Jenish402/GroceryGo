@@ -16,6 +16,7 @@ import { fileURLToPath } from 'url'; // ✅ Add this
 
 const __filename = fileURLToPath(import.meta.url); // ✅ ES module-compatible way
 const __dirname = path.dirname(__filename);        // ✅ Get directory name
+const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -24,7 +25,6 @@ await connectDB();
 await connectCloudinary();
 
 // Allow multiple origins
-const cors = require('cors');
 
 const whitelist = [
   'http://localhost:5173',
