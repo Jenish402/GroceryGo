@@ -24,7 +24,7 @@ await connectDB();
 await connectCloudinary();
 
 // Allow multiple origins
-const allowedOrigins = ['http://localhost:5173'];
+const allowedOrigins = ['http://localhost:5173', 'https://grocery-go-rho.vercel.app/'];
 app.post('/api/webhook', express.raw({ type: 'application/json' }), stripeWebhooks);
 
 
@@ -34,11 +34,11 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 
-app.use(cors({
-  origin: ['http://localhost:5173', 'https://grocery-go-rho.vercel.app/'],
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  credentials: true
-}));
+// app.use(cors({
+//   origin: ['http://localhost:5173', 'https://grocery-go-rho.vercel.app/'],
+//   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+//   credentials: true
+// }));
 
 app.get('/', (req, res) => res.send("API is Working"));
 
