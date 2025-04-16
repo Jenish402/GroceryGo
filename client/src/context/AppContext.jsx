@@ -39,7 +39,7 @@ export const AppContextProvider = ({children})=>{
     // Fetch User Auth Status , User Data and Cart Items
 const fetchUser = async ()=>{
     try {
-        const {data} = await axios.get(`${import.meta.env.VITE_API_BASE_URL}api/user/is-auth`);
+        const {data} = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/user/is-auth`);
         if (data.success){
             setUser(data.user)
             setCartItems(data.user.cartItems)
