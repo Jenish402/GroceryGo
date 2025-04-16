@@ -10,7 +10,12 @@ const SellerLogin = () => {
     const onSubmitHandler = async (event)=>{
         try {
             event.preventDefault();
-            const {data} = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/seller/login`, {email, password})
+            const { data } = await axios.post(
+                `${import.meta.env.VITE_API_BASE_URL}/api/seller/login`,
+                { email, password },
+                { withCredentials: true } // 👈 Required for cookie/session-based auth
+              );
+              
             if(data.success){
                 setIsSeller(true)
                 navigate('/seller')

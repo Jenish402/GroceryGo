@@ -15,9 +15,12 @@ const Login = () => {
         try {
             event.preventDefault();
 
-            const {data} = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/user/login`,{
-                name, email, password
-            });
+            const { data } = await axios.post(
+                `${import.meta.env.VITE_API_BASE_URL}/api/user/${state}`,
+                { name, email, password },
+                { withCredentials: true } // 👈 This is required for cookies/sessions
+              );
+              
             if (data.success){
                 navigate('/')
                 setUser(data.user)
