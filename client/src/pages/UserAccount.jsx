@@ -11,7 +11,7 @@ const UserAccount = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const { data } = await axios.get('/api/user/details', {
+        const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/user/details`, {
           withCredentials: true,
         });
         if (data.success) {
@@ -49,7 +49,7 @@ const UserAccount = () => {
     try {
       const updatedAddresses = userInfo.addresses.filter((_, i) => i !== index);
       const { data } = await axios.post(
-        '/api/user/update',
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/update`,
         { addresses: updatedAddresses },
         { withCredentials: true }
       );

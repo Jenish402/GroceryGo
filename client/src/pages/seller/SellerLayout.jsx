@@ -16,7 +16,7 @@
 
         const logout = async ()=>{
             try {
-                const { data } = await axios.get('/api/seller/logout');
+                const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/seller/logout`);
                 if(data.success){
                     toast.success(data.message)
                     navigate('/')

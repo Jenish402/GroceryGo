@@ -47,7 +47,7 @@ const AddAddress = () => {
     const onSubmitHandler = async (e)=>{
         e.preventDefault();
         try {
-            const {data} = await axios.post('/api/address/add', {address});
+            const {data} = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/address/add`, {address});
 
             if (data.success){
                 toast.success(data.message)

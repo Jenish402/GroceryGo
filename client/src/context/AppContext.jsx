@@ -25,7 +25,7 @@ export const AppContextProvider = ({children})=>{
   // Fetch Seller Status
   const fetchSeller = async ()=>{
     try {
-        const {data} = await axios.get('/api/seller/is-auth');
+        const {data} = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/seller/is-auth`);
         if(data.success){
             setIsSeller(true)
         }else{
@@ -39,7 +39,7 @@ export const AppContextProvider = ({children})=>{
     // Fetch User Auth Status , User Data and Cart Items
 const fetchUser = async ()=>{
     try {
-        const {data} = await axios.get('api/user/is-auth');
+        const {data} = await axios.get(`${import.meta.env.VITE_API_BASE_URL}api/user/is-auth`);
         if (data.success){
             setUser(data.user)
             setCartItems(data.user.cartItems)
@@ -54,7 +54,7 @@ const fetchUser = async ()=>{
     // Fetch All Products
     const fetchProducts = async ()=>{
         try {
-            const { data } = await axios.get('/api/product/list')
+            const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/product/list`)
             if(data.success){
                 setProducts(data.products)
             }else{
@@ -131,7 +131,7 @@ const getCartAmount = () =>{
     useEffect(()=>{
         const updateCart = async ()=>{
             try {
-                const { data } = await axios.post('/api/cart/update', {cartItems})
+                const { data } = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/cart/update`, {cartItems})
                 if (!data.success){
                     toast.error(data.message)
                 }

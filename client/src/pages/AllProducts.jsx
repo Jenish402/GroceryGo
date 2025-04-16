@@ -1,26 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import { useAppContext } from '../context/AppContext';
-import ProductCard from '../components/ProductCard.jsx';
-import toast from 'react-hot-toast';
-import { assets } from '../assets/assets';
+import React, { useState, useEffect } from "react";
+import { useAppContext } from "../context/AppContext";
+import ProductCard from "../components/ProductCard.jsx";
+import toast from "react-hot-toast";
+import { assets } from "../assets/assets";
 
 const AllProducts = () => {
   const { navigate, axios } = useAppContext();
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState(['All', 'Fruits', 'Vegetables', 'Dairy', 'Snacks', 'Bakery', 'Grains', 'Drinks']);
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [categories, setCategories] = useState([
+    "All",
+    "Fruits",
+    "Vegetables",
+    "Dairy",
+    "Snacks",
+    "Bakery",
+    "Grains",
+    "Drinks",
+  ]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
 
   // Fetch products based on selected category
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        console.log(import.meta.env.VITE_API_BASE_URL);
+
         setLoading(true);
-        const query = selectedCategory === 'All' ? '' : `?category=${selectedCategory}`;
-        const { data } = await axios.get(`/api/product/list${query}`, {
-          withCredentials: true,
-        });
+        const query =
+          selectedCategory === "All" ? "" : `?category=${selectedCategory}`;
+        const { data } = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/api/product/list${query}`,
+          {
+            withCredentials: true,
+          }
+        );
         if (data.success) {
+          console.log(data);
+
           setProducts(data.products || []);
         } else {
           toast.error(data.message);
@@ -28,7 +45,7 @@ const AllProducts = () => {
           setProducts(mockProducts);
         }
       } catch (error) {
-        toast.error('Failed to load products');
+        toast.error("Failed to load products");
         setProducts(mockProducts);
       } finally {
         setLoading(false);
@@ -43,14 +60,17 @@ const AllProducts = () => {
     const fetchCategories = async () => {
       try {
         // Hypothetical endpoint; replace with actual if available
-        const { data } = await axios.get('/api/category/list', {
-          withCredentials: true,
-        });
+        const { data } = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/api/category/list`,
+          {
+            withCredentials: true,
+          }
+        );
         if (data.success) {
-          setCategories(['All', ...data.categories]);
+          setCategories(["All", ...data.categories]);
         }
       } catch (error) {
-        console.log('Using default categories');
+        console.log("Using default categories");
         // Keep static categories if endpoint fails
       }
     };
@@ -61,33 +81,33 @@ const AllProducts = () => {
   // Mock data for products (replace with API data)
   const mockProducts = [
     {
-      _id: '1',
-      name: 'Organic Apples',
-      category: 'Fruits',
+      _id: "1",
+      name: "Organic Apples",
+      category: "Fruits",
       price: 120,
       image: assets.bottom_banner_image,
       rating: 4.5,
     },
     {
-      _id: '2',
-      name: 'Fresh Spinach',
-      category: 'Vegetables',
+      _id: "2",
+      name: "Fresh Spinach",
+      category: "Vegetables",
       price: 40,
       image: assets.bottom_banner_image_sm,
       rating: 4.2,
     },
     {
-      _id: '3',
-      name: 'Whole Milk',
-      category: 'Dairy',
+      _id: "3",
+      name: "Whole Milk",
+      category: "Dairy",
       price: 60,
       image: assets.bottom_banner_image,
       rating: 4.7,
     },
     {
-      _id: '4',
-      name: 'Crispy Chips',
-      category: 'Snacks',
+      _id: "4",
+      name: "Crispy Chips",
+      category: "Snacks",
       price: 30,
       image: assets.bottom_banner_image_sm,
       rating: 4.0,
@@ -98,17 +118,17 @@ const AllProducts = () => {
   const handleAddToCart = async (productId) => {
     try {
       const { data } = await axios.post(
-        '/api/cart/update',
+        `${import.meta.env.VITE_API_BASE_URL}/api/cart/update`,
         { productId, quantity: 1 },
         { withCredentials: true }
       );
       if (data.success) {
-        toast.success('Added to cart');
+        toast.success("Added to cart");
       } else {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error('Failed to add to cart');
+      toast.error("Failed to add to cart");
     }
   };
 
@@ -128,7 +148,7 @@ const AllProducts = () => {
             All Products
           </h1>
           <p className="text-gray-500 text-center mb-12">
-            Explore our wide range of groceries at{' '}
+            Explore our wide range of groceries at{" "}
             <span className="text-primary">GroceryGo</span>!
           </p>
 
@@ -140,8 +160,8 @@ const AllProducts = () => {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                   selectedCategory === category
-                    ? 'bg-primary text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    ? "bg-primary text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                 }`}
               >
                 {category}

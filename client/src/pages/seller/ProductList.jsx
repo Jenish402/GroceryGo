@@ -9,7 +9,7 @@ const ProductList = () => {
         try {
             console.log("hi");
             
-            const { data } = await axios.post('/api/product/stock', {id, inStock});
+            const { data } = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/product/stock`, {id, inStock});
             if (data.success){
                 fetchProducts();
                 toast.success(data.message)

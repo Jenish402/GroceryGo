@@ -16,7 +16,7 @@ const BestSellers = () => {
     const fetchBestSellers = async () => {
       try {
         // Assuming API endpoint returns products sorted by sales
-        const { data } = await axios.get('/api/product/list?sort=sales', {
+        const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/product/list?sort=sales`, {
           withCredentials: true,
         });
         if (data.success) {
@@ -81,7 +81,7 @@ const BestSellers = () => {
   const handleAddToCart = async (productId) => {
     try {
       const { data } = await axios.post(
-        '/api/cart/update',
+        `${import.meta.env.VITE_API_BASE_URL}/api/cart/update`,
         { productId, quantity: 1 },
         { withCredentials: true }
       );
