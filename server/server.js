@@ -37,7 +37,8 @@ const corsOptions = {
     } else {
       callback(new Error('Not allowed by CORS'));
     }
-  }
+  },
+  credentials: true,
 };
 
 
@@ -45,8 +46,9 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), stripeWebhoo
 
 
 // Middleware
-app.use("/public", express.static(path.join(__dirname, "public"))); // ✅ This works now
 app.use(cors(corsOptions));
+app.use("/public", express.static(path.join(__dirname, "public"))); // ✅ This works now
+// app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(cookieParser());
 
