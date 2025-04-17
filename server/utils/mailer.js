@@ -40,10 +40,16 @@ export const sendWelcomeMail = async (to, username) => {
 
 // 💸 Payment Success Mail Function
 export const sendPaymentSuccessMail = async (to, username, orderDetails) => {
+  if (!Array.isArray(orderDetails)) {
+    console.error("❌ orderDetails is not an array:", orderDetails);
+    return;
+  }
+
   const total = orderDetails.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+
 
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
