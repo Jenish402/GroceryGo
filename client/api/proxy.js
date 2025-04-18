@@ -1,12 +1,13 @@
-const { createProxyMiddleware } = require('http-proxy-middleware');
+// client/api/proxy.js
+// const { createProxyMiddleware } = require('http-proxy-middleware');
+import createProxyMiddleware from 'http-proxy-middleware'
 
 module.exports = (req, res) => {
   createProxyMiddleware({
-    target: 'https://grocerygo-04e2.onrender.com', // Your backend URL
+    target: 'https://grocerygo-04e2.onrender.com',
     changeOrigin: true,
-    pathRewrite: { '^/api': '' }, // Remove /api prefix
+    pathRewrite: { '^/api': '' },
     onProxyReq: (proxyReq, req) => {
-      // Forward cookies
       if (req.headers.cookie) {
         proxyReq.setHeader('Cookie', req.headers.cookie);
       }

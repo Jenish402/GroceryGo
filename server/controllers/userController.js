@@ -106,3 +106,26 @@ export const logout = async (req, res)=>{
     }
 }
 
+
+export const updateUser = async (req, res) => {
+  try {
+    const { name, email, addresses } = req.body;
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (email) updateData.email = email;
+    if (addresses) updateData.addresses = addresses;
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      updateData,
+      { new: true }
+    ).select('-password');
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    return res.status(200).json({ success: true, user });
+  } catch (error) {
+    console.error('updateUser error:', error.message);
+    return res.status(500).json({ error: 'Server error' });
+  }
+};

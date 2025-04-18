@@ -4,16 +4,29 @@ import toast from 'react-hot-toast';
 
 const UserAccount = () => {
   const { navigate, axios, user } = useAppContext();
-  const [userInfo, setUserInfo] = useState({ name: '', email: '', addresses: [] });
-  const [loading, setLoading] = useState(true);
+  const [userInfo, setUserInfo] = useState({
+    name: user?.name || '',
+    email: user?.email || '',
+    addresses: user?.addresses || [],
+  });
+  const [loading, setLoading] = useState(!user); // Only load if user is not available
 
-  // Fetch user account details
+  // Fetch user account details only if user is not available
   useEffect(() => {
     const fetchUserInfo = async () => {
-      try {
-        const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/user/details`, {
-          withCredentials: true,
+      if (user) {
+        // Use existing user data
+        setUserInfo({
+          name: user.name || 'User',
+          email: user.email || '',
+          addresses: user.addresses || [],
         });
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const { data } = await axios.get('/api/user/is-auth'); // Use existing endpoint
         if (data.success) {
           setUserInfo({
             name: data.user.name || 'User',
@@ -30,9 +43,9 @@ const UserAccount = () => {
       }
     };
     fetchUserInfo();
-  }, [axios]);
+  }, [axios, user]);
 
-  // Placeholder for adding a new address (assumes future API endpoint)
+  // Placeholder for adding a new address
   const handleAddAddress = () => {
     toast('Address management coming soon!', { icon: 'ℹ️' });
     // Future implementation: navigate('/account/address/add');
@@ -44,15 +57,13 @@ const UserAccount = () => {
     // Future implementation: navigate(`/account/address/edit/${index}`);
   };
 
-  // Placeholder for deleting an address
+  // Delete an address
   const handleDeleteAddress = async (index) => {
     try {
       const updatedAddresses = userInfo.addresses.filter((_, i) => i !== index);
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/user/update`,
-        { addresses: updatedAddresses },
-        { withCredentials: true }
-      );
+      const { data } = await axios.put('/api/user/update', {
+        addresses: updatedAddresses,
+      });
       if (data.success) {
         setUserInfo((prev) => ({ ...prev, addresses: updatedAddresses }));
         toast.success('Address deleted');

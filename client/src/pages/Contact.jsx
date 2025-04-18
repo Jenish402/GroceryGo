@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useAppContext } from '../context/AppContext'; // Adjust path to your AppContext.jsx
+import toast from 'react-hot-toast'; // Optional, for user feedback
 
 const Contact = () => {
   // Initialize form state
@@ -11,6 +13,9 @@ const Contact = () => {
 
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+
+  // Get Axios instance from AppContext
+  const { axios: api } = useAppContext(); // Use 'axios' or 'api' depending on your context
 
   // Handle input changes
   const handleChange = (e) => {
@@ -28,29 +33,26 @@ const Contact = () => {
     // Basic validation
     if (!form.name || !form.email || !form.subject || !form.message) {
       setError('Please fill in all fields.');
+      toast.error('Please fill in all fields.');
       return;
     }
 
     try {
-        const response = await fetch('http://localhost:5000/contact', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(form),
-          });
-
-      const result = await response.json();
+      const response = await api.post('/contact', form); // Use Axios with baseURL
+      const result = response.data;
 
       if (result.success) {
         setSubmitted(true);
         setError('');
-        setForm({ name: '', email: '', subject: '', message: '' });  // Clear form fields on success
+        setForm({ name: '', email: '', subject: '', message: '' }); // Clear form
+        toast.success('Message sent successfully!');
       } else {
         setError(result.error || 'Something went wrong.');
+        toast.error(result.error || 'Something went wrong.');
       }
     } catch (err) {
       setError('Failed to send message. Please try again later.');
+      toast.error('Failed to send message. Please try again later.');
     }
   };
 

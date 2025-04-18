@@ -27,6 +27,7 @@ import OffersAndDeals from './components/OffersAndDeals';
 import BestSellers from './components/BestSellers';
 import UserAccount from './pages/UserAccount';
 import ExploreDeals from './pages/ExploreDeals';
+import EditProfile from './pages/EditProfile';
 
 const App = () => {
 
@@ -60,6 +61,7 @@ const App = () => {
           <Route path='/bestsellers' element={<BestSellers/>} />
           <Route path='/account' element={<UserAccount/>} />
           <Route path='/exploredeals' element={<ExploreDeals/>} />
+          <Route path='/editprofile' element={<EditProfile/>} />
           <Route path='/seller' element={isSeller ? <SellerLayout/> : <SellerLogin/>}>
             <Route index element={isSeller ? <AddProduct/> : null} />
             <Route path='product-list' element={<ProductList/>} />
