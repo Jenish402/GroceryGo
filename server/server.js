@@ -12,48 +12,47 @@ import addressRouter from './routes/addressRoute.js';
 import orderRouter from './routes/orderRoute.js';
 import { stripeWebhooks } from './controllers/orderController.js';
 import path from 'path';
-import { fileURLToPath } from 'url'; // ✅ Add this
+import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url); // ✅ ES module-compatible way
-const __dirname = path.dirname(__filename);        // ✅ Get directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Connect to DB and Cloudinary
 await connectDB();
 await connectCloudinary();
 
-// Allow multiple origins
-
+// CORS configuration
 const whitelist = [
-  'http://localhost:5173',
-  'https://grocery-go-rho.vercel.app'
+    'http://localhost:5173', // Remove trailing slash
+    'https://grocery-go-rho.vercel.app'
 ];
-
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || whitelist.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
+    origin: function (origin, callback) {
+        if (!origin || whitelist.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true // Explicitly allow credentials
 };
 
+// Apply CORS middleware
+app.use(cors(corsOptions));
 
+// Webhook endpoint (must come before express.json())
 app.post('/api/webhook', express.raw({ type: 'application/json' }), stripeWebhooks);
 
-
-// Middleware
-app.use(cors(corsOptions));
-app.use("/public", express.static(path.join(__dirname, "public"))); // ✅ This works now
-// app.use(cors({ origin: '*' }));
+// Other middleware
+app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(cookieParser());
 
+// Routes
 app.get('/', (req, res) => res.send("API is Working"));
-
 app.use('/api/user', userRouter);
 app.use('/api/seller', sellerRouter);
 app.use('/api/product', productRouter);
@@ -62,15 +61,13 @@ app.use('/api/address', addressRouter);
 app.use('/api/order', orderRouter);
 
 app.post('/contact', (req, res) => {
-  const { name, email, subject, message } = req.body;
-
-  if (!name || !email || !subject || !message) {
-    return res.status(400).json({ error: 'All fields are required' });
-  }
-
-  return res.status(200).json({ success: true, message: 'Message sent successfully' });
+    const { name, email, subject, message } = req.body;
+    if (!name || !email || !subject || !message) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+    return res.status(200).json({ success: true, message: 'Message sent successfully' });
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+    console.log(`Server is running on http://localhost:${port}`);
 });
