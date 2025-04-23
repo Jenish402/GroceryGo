@@ -3,7 +3,6 @@ import Product from "../models/Product.js";
 import stripe from "stripe";
 import User from "../models/User.js";
 import { sendPaymentSuccessMail } from "../utils/mailer.js"; // ✅ import mailer
-import { log } from "console";
 
 // Place Order COD : /api/order/cod
 export const placeOrderCOD = async (req, res) => {
@@ -116,7 +115,7 @@ export const placeOrderCOD = async (req, res) => {
 export const placeOrderStripe = async (req, res) => {
   try {
     const { userId, items, address } = req.body;
-    const { origin } = req.headers;
+    const origin = "http://localhost:5173";
     console.log("Origin:", origin);
 
     if (!address || items.length === 0) {
@@ -351,8 +350,6 @@ export const stripeWebhooks = async (req, res) => {
   const signature = req.headers['stripe-signature'];
 
   try {
-    console.log(process.env.STRIPE_SECRET_KEY);
-    
     const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY);
     
     // This line will throw an error if the signature is invalid
