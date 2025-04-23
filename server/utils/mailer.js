@@ -39,26 +39,100 @@ export const sendWelcomeMail = async (to, username) => {
 };
 
 // 💸 Payment Success Mail Function
+// export const sendPaymentSuccessMail = async (to, username, orderDetails) => {
+//   if (!Array.isArray(orderDetails)) {
+//     console.error("❌ orderDetails is not an array:", orderDetails);
+//     return;
+//   }
+
+//   const total = orderDetails.reduce(
+//     (sum, item) => sum + item.price * item.quantity,
+//     0
+//   );
+
+
+//   const htmlContent = `
+//     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
+//       <div style="text-align: center;">
+//         <img src="http://localhost:5000/public/logo.svg" alt="GroceryGo Logo" style="max-width: 150px;" />
+//         <h2>Hi ${username} 👋</h2>
+//         <p><strong>✅ Payment Received!</strong></p>
+//       </div>
+//       <p>Thank you for shopping with <strong>GroceryGo</strong>! Your payment was successful and we’re processing your order.</p>
+//       <h3>🧾 Invoice</h3>
+//       <table style="width: 100%; border-collapse: collapse;">
+//         <thead>
+//           <tr style="background-color: #f4f4f4;">
+//             <th style="border: 1px solid #ddd; padding: 8px;">Item</th>
+//             <th style="border: 1px solid #ddd; padding: 8px;">Qty</th>
+//             <th style="border: 1px solid #ddd; padding: 8px;">Price</th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           ${orderDetails
+//             .map(
+//               (item) => `
+//             <tr>
+//               <td style="border: 1px solid #ddd; padding: 8px;">${item.name}</td>
+//               <td style="border: 1px solid #ddd; padding: 8px;">${item.quantity}</td>
+//               <td style="border: 1px solid #ddd; padding: 8px;">₹${item.price}</td>
+//             </tr>
+//           `
+//             )
+//             .join("")}
+//         </tbody>
+//       </table>
+//       <p style="text-align: right; font-weight: bold; margin-top: 10px;">Total Paid: ₹${total}</p>
+//       <p>If you have any questions, feel free to reach out to us!</p>
+//       <p>Thanks again for choosing <strong>GroceryGo</strong>! 💚</p>
+//     </div>
+//   `;
+
+//   const mailOptions = {
+//     from: `"GroceryGo" <${process.env.MAIL_USER}>`,
+//     to,
+//     subject: "🧾 Payment Successful - Your GroceryGo Invoice",
+//     html: htmlContent,
+//   };
+
+//   try {
+//     await transporter.sendMail(mailOptions);
+//     console.log("✅ Payment email sent to", to);
+//   } catch (error) {
+//     console.error("❌ Error sending payment email:", error);
+//   }
+// };
+
 export const sendPaymentSuccessMail = async (to, username, orderDetails) => {
-  if (!Array.isArray(orderDetails)) {
-    console.error("❌ orderDetails is not an array:", orderDetails);
-    return;
+  // Ensure orderDetails is an array
+  if (!orderDetails || !Array.isArray(orderDetails)) {
+    console.error("❌ Invalid orderDetails format:", orderDetails);
+    // Try to convert from string if it's JSON
+    if (typeof orderDetails === 'string') {
+      try {
+        orderDetails = JSON.parse(orderDetails);
+      } catch (e) {
+        console.error("❌ Could not parse orderDetails string:", e);
+        return;
+      }
+    } else {
+      // If it's still not an array, create a default
+      orderDetails = [];
+    }
   }
 
   const total = orderDetails.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + (item.price || 0) * (item.quantity || 1),
     0
   );
-
 
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
       <div style="text-align: center;">
-        <img src="http://localhost:5000/public/logo.svg" alt="GroceryGo Logo" style="max-width: 150px;" />
         <h2>Hi ${username} 👋</h2>
         <p><strong>✅ Payment Received!</strong></p>
       </div>
-      <p>Thank you for shopping with <strong>GroceryGo</strong>! Your payment was successful and we’re processing your order.</p>
+      <p>Thank you for shopping with <strong>GroceryGo</strong>! Your payment was successful and we're processing your order.</p>
       <h3>🧾 Invoice</h3>
       <table style="width: 100%; border-collapse: collapse;">
         <thead>
@@ -73,9 +147,9 @@ export const sendPaymentSuccessMail = async (to, username, orderDetails) => {
             .map(
               (item) => `
             <tr>
-              <td style="border: 1px solid #ddd; padding: 8px;">${item.name}</td>
-              <td style="border: 1px solid #ddd; padding: 8px;">${item.quantity}</td>
-              <td style="border: 1px solid #ddd; padding: 8px;">₹${item.price}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">${item.name || 'Product'}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">${item.quantity || 1}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">₹${item.price || 0}</td>
             </tr>
           `
             )
@@ -98,8 +172,10 @@ export const sendPaymentSuccessMail = async (to, username, orderDetails) => {
   try {
     await transporter.sendMail(mailOptions);
     console.log("✅ Payment email sent to", to);
+    return true;
   } catch (error) {
     console.error("❌ Error sending payment email:", error);
+    return false;
   }
 };
 
