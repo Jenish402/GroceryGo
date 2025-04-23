@@ -36,7 +36,7 @@ app.use(
     origin: (origin, callback) => {
       // Allow requests with no origin (e.g., Postman) or from allowed origins
       if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, origin || '*');
+        callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
       }
@@ -59,7 +59,6 @@ app.use(
 );
 
 // Webhook endpoint (must come before express.json())
-app.post('/api/webhook', express.raw({ type: 'application/json' }), stripeWebhooks);
 
 // Other middleware
 app.use('/public', express.static(path.join(__dirname, 'public')));
@@ -68,6 +67,7 @@ app.use(cookieParser());
 
 // Routes
 app.get('/', (req, res) => res.send('API is Working'));
+app.post('/api/webhook', express.raw({ type: 'application/json' }), stripeWebhooks);
 app.use('/api/user', userRouter);
 app.use('/api/seller', sellerRouter);
 app.use('/api/product', productRouter);

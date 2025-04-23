@@ -28,6 +28,7 @@ import BestSellers from './components/BestSellers';
 import UserAccount from './pages/UserAccount';
 import ExploreDeals from './pages/ExploreDeals';
 import EditProfile from './pages/EditProfile';
+import Success from './pages/Success';
 
 const App = () => {
 
@@ -62,7 +63,8 @@ const App = () => {
           <Route path='/account' element={<UserAccount/>} />
           <Route path='/exploredeals' element={<ExploreDeals/>} />
           <Route path='/editprofile' element={<EditProfile/>} />
-          <Route path='/seller' element={isSeller ? <SellerLayout/> : <SellerLogin/>}>
+          <Route path='/editprofile' element={<EditProfile/>} />
+          <Route path='/success' element={<Success/>}>
             <Route index element={isSeller ? <AddProduct/> : null} />
             <Route path='product-list' element={<ProductList/>} />
             <Route path='orders' element={<Orders/>} />

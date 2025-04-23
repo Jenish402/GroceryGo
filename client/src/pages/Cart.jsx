@@ -21,6 +21,7 @@ const Cart = () => {
         setCartArray(tempArray)
     }
 
+
     const getUserAddress = async ()=>{
         try {
             const {data} = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/address/get`);
@@ -66,6 +67,9 @@ const Cart = () => {
                     items: cartArray.map(item=> ({product: item._id, quantity: item.quantity})),
                     address: selectedAddress._id
                 })
+
+                console.log(data);
+                
 
                 if(data.success){
                     window.location.replace(data.url)
